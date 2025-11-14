@@ -2,7 +2,7 @@
 command to get dice rolls in DnD notation
 
 ```
-Usage: /opt/bin/redsdice <DnD dice descriptor> [...]
+Usage: redsdice <DnD dice descriptor> [...]
 
 Examples:
 /opt/bin/redsdice d20
