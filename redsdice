@@ -4,26 +4,52 @@
 import sys  # to get the command arguments
 from secrets import randbelow  # for secure randomness
 import re  # to parse the dnd dice descriptor into its parts
+write = lambda *args, **kwargs: print( *args, **kwargs, end="" )
 
 if len(sys.argv) < 2:
-    print(f'Usage: {sys.argv[0]} <DnD dice descriptor> [...]\n\nExamples:\n{sys.argv[0]} d20\n{sys.argv[0]} 4d18 d12 1d8 1d34+8')
+    print(f'''Usage: {sys.argv[0]} <DnD dice descriptor> [...]
+
+Examples:
+{sys.argv[0]} d20
+{sys.argv[0]} 4d18 d12 1d8 1d34+8
+
+DnD dice descriptor:
+[number of dice]d<number of sides per die>[+-modifier]
+2d6+8 means throw two six-sided dice, sum them, then add 8
+''')
 
 def roll(dicedesc):
-    dicedesc = re.match(r"(?P<amount>\d*)d(?P<size>\d*)(?P<modifier>[+-]\d+)?",dicedesc)
+    diceinfo = re.match(r"^(?P<amount>\d*)d(?P<size>\d*)(?P<modifier>[+-]\d+)?$",dicedesc)
     
-    amount   = dicedesc.group("amount") or 1
-    size     = dicedesc.group("size")
-    modifier = dicedesc.group("modifier") or 0
+    if not diceinfo:
+        return print(f"can't parse '{dicedesc}´")
+    
+    amount   = diceinfo.group("amount") or 1
+    size     = diceinfo.group("size")
+    modifier = diceinfo.group("modifier") or 0
     
     amount   = int(amount)
     size     = int(size)
     modifier = int(modifier)
     
+    rolls = []
     for _ in range(amount):
-        roll = randbelow(size) + 1
-        roll += modifier
-        print(f'd{size}: \t{roll}')
+        rolls.append( randbelow(size) + 1 )
     
+    if amount != 1:
+        write(f'{amount} ')
+    write(f'd{size}')
+    if modifier:
+        write(f' {diceinfo.group("modifier")}')
+    write(f':     \t')
+    write(f'{sum(rolls)+modifier}\t')
+    write( '+'.join(f'[{roll}]' for roll in rolls ) )
+    if modifier:
+        write(f'{diceinfo.group("modifier")}')
+    print()
+    
+    
+
 
 for die in sys.argv[1:]:
     roll(die)
