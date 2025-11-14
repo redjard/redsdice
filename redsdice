@@ -6,7 +6,7 @@ from secrets import randbelow  # for secure randomness
 import re  # to parse the dnd dice descriptor into its parts
 
 if len(sys.argv) < 2:
-    print(f'Usage: {sys.argv[0]} <DnD dice descriptor> [...]\n\nExamples:\n{sys.argv[0]} d20\n{sys.argv[0]} 4d18 d12 1d8 1d34-8')
+    print(f'Usage: {sys.argv[0]} <DnD dice descriptor> [...]\n\nExamples:\n{sys.argv[0]} d20\n{sys.argv[0]} 4d18 d12 1d8 1d34+8')
 
 def roll(dicedesc):
     dicedesc = re.match(r"(?P<amount>\d*)d(?P<size>\d*)(?P<modifier>[+-]\d+)?",dicedesc)
